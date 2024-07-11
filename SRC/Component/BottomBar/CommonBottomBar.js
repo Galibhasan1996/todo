@@ -25,9 +25,9 @@ const CommonBottomBar = () => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {
-                navigation.navigate("Calendar")
+                navigation.navigate("Calendar1")
             }}>
-                <Allicon IconCategoryName={"Fontisto"} IconName={"calendar"} color={route.name === "Calendar" ? AllColor.Androidgreen : AllColor.gray}></Allicon>
+                <Allicon IconCategoryName={"Fontisto"} IconName={"calendar"} color={route.name === "Calendar1" ? AllColor.Androidgreen : AllColor.gray}></Allicon>
             </TouchableOpacity >
 
             <TouchableOpacity onPress={() => {

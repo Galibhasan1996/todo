@@ -5,7 +5,7 @@ import { responsiveScreenWidth } from 'react-native-responsive-dimensions'
 import { scale } from 'react-native-size-matters'
 import Allicon from '../allIcon/AllIcon'
 
-const TopHeader = ({ data, setvisible }) => {
+const TopHeader = ({ data, setvisible, onpress }) => {
     // -------------custon style----------
     const { CustomStyle, isDark } = useCustomStyle()
     return (
@@ -13,9 +13,13 @@ const TopHeader = ({ data, setvisible }) => {
             <View style={styles.filterContainer}>
                 <View style={{ flexDirection: "row", alignItems: 'center', gap: scale(5), flexWrap: "wrap" }}>
                     {data.map((item, index) => (
-                        <View key={index} style={[styles.filter_item_container, CustomStyle.WhiteBackground]}>
+                        <TouchableOpacity key={index} style={[styles.filter_item_container, CustomStyle.WhiteBackground]} onPress={() => {
+                            if (index === 0) {
+                                onpress()
+                            }
+                        }}>
                             <Text style={[styles.filter_item_text, CustomStyle.BlackColor]}>{item.title}</Text>
-                        </View>
+                        </TouchableOpacity>
                     ))}
                 </View>
             </View>

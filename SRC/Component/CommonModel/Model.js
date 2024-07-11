@@ -1,24 +1,20 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, } from 'react-native'
 import React, { useEffect, useState, } from 'react'
 import { useCustomStyle } from '../../../Hooks/customStyle/UseStyle'
-import { useNavigation } from '@react-navigation/native'
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions'
 import { scale } from 'react-native-size-matters'
 import Input from '../CommonInput/Input'
 import { BASE_URL, showToast, styleConsole } from '../../Util/Constent/Constent'
 import Allicon from '../allIcon/AllIcon'
 import { AllColor } from '../../Util/Color/AllColor'
-import ModelInput from '../CategorySuggestion/ModelInput'
 import CommonButton from '../Button/CommonButton'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios'
 
 
 const Model = ({ chooseCategory, suggestion, setvisible, visible }) => {
     // -------------custon style----------
     const { CustomStyle, isDark, height, width } = useCustomStyle()
-    // ------------navigation----------
-    const navigation = useNavigation()
+
 
     const [inputValue, setinputValue] = useState('');
 
@@ -58,7 +54,7 @@ const Model = ({ chooseCategory, suggestion, setvisible, visible }) => {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    styleConsole("🚀 ~ file: Model.js:84 ~ .then ~ data:", data)
+                    styleConsole("🚀 ~ file: Model.js:61 ~ .then ~ data:", "Todo", data)
                     if (data.message === "todo created successfully") {
                         showToast("success", data.message, data.message)
                         setinputValue("");

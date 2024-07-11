@@ -13,8 +13,18 @@ import Model from '../../Component/CommonModel/Model'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions'
 import moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllTodoData } from '../../redux/slice/getDataSlice'
+
+
 
 const Home = () => {
+    // -----------dispatch--------------
+    const dispatch = useDispatch()
+
+
+
+
     const today = moment().format('MMM-Do')
     // -------------custon style----------
     const { CustomStyle, isDark, height, width } = useCustomStyle()
@@ -30,7 +40,6 @@ const Home = () => {
     const [pandingTodo, setpandingTodo] = useState([]);
     const [completeTodo, setCompleteTodo] = useState([]);
     const [marked, setmarked] = useState(false);
-
 
     // -----------get all filter ------------
     const getAllFilter = async () => {
@@ -56,7 +65,7 @@ const Home = () => {
     const getAllTodo = async () => {
         try {
             const { data } = await axios.get(`${BASE_URL}todo/get-all-todo/${userId}`)
-            setTodo(data)
+            setTodo(data.todo)
 
             const fetchAllDataToFilter = data.todo || []
 
@@ -66,14 +75,14 @@ const Home = () => {
             setpandingTodo(pending)
 
         } catch (error) {
-            styleConsole("🚀 ~ file: Home.js:69 ~ getAllFilter ~ error:", error.message)
+            styleConsole("🚀 ~ file: Home.js:69 ~ getAllTodo ~ error:", error.message)
         }
     }
 
     const getStoredData = async () => {
         try {
             const userId = await AsyncStorage.getItem("userId");
-            if (userId !== null) {
+            if (userId !== null || userId !== undefined) {
                 setuserId(JSON.parse(userId));
             } else {
                 console.log('No data found');
@@ -109,6 +118,8 @@ const Home = () => {
 
 
     useEffect(() => {
+        dispatch(getAllTodoData(userId))
+
         getStoredData()
         getAllFilter()
         getAllSuggestion()
@@ -118,7 +129,7 @@ const Home = () => {
 
     return (
         <View style={[styles.container, CustomStyle.BlackBackground]}>
-            <TopHeader data={filterData} setvisible={setvisible} />
+            <TopHeader data={filterData} setvisible={setvisible} onpress={() => { getAllTodo() }} />
             <Text style={[CustomStyle.WhiteBorder, { marginLeft: scale(10) }]}>{`Task to do!  ${today}`}</Text>
             <ScrollView style={{ marginBottom: scale(36) }}>
                 <View style={{ width: width, height: height }}>
@@ -126,7 +137,6 @@ const Home = () => {
                         Todo.length === 0 ?
                             (
                                 <View style={styles.todo_not_found}>
-
                                     <Allicon IconCategoryName={"MaterialCommunityIcons"} IconName={"clipboard-text-outline"} color={isDark ? AllColor.white : AllColor.black} size={150} />
                                     <TouchableOpacity onPress={() => {
                                         setvisible(true)
@@ -141,7 +151,9 @@ const Home = () => {
                                     {
                                         pandingTodo.map((item, index) => {
                                             return (
-                                                <TouchableOpacity key={index} style={[styles.todo_container, CustomStyle.WhiteBackground]}>
+                                                <TouchableOpacity key={index} style={[styles.todo_container, CustomStyle.WhiteBackground]} onPress={() => {
+                                                    navigation.navigate("TodoDetail", { item: item })
+                                                }}>
                                                     <TouchableOpacity onPress={() => {
                                                         markTodoAsComplete(item._id)
                                                         getAllTodo()
@@ -151,13 +163,10 @@ const Home = () => {
                                                     <View>
                                                         <Text style={[styles.todo_text, CustomStyle.BlackColor]}>{item.title}</Text>
                                                     </View>
-
                                                     <View>
                                                         <Allicon IconCategoryName={"Ionicons"} IconName={"flag-outline"} color={isDark ? AllColor.black : AllColor.white} />
                                                     </View>
-
                                                 </TouchableOpacity>
-
                                             )
                                         })
                                     }
@@ -173,7 +182,6 @@ const Home = () => {
                                             </View>
                                         </View>
                                     }
-
                                     {
                                         completeTodo.map((item, index) => {
                                             return (
@@ -191,9 +199,7 @@ const Home = () => {
                                                     <View>
                                                         <Allicon IconCategoryName={"Ionicons"} IconName={"flag"} color={isDark ? AllColor.gray : AllColor.gray} />
                                                     </View>
-
                                                 </TouchableOpacity>
-
                                             )
                                         })
                                     }
